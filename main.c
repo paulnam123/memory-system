@@ -3,6 +3,7 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include <string.h>
+#include "functions.h"
 
 int main(int argc, char **argv){
 
@@ -35,7 +36,7 @@ int main(int argc, char **argv){
     }
 
     if(!strcmp(command, "create")){
-
+      
     }else if(!strcmp(command, "kill")){
 
     }else if(!strcmp(command, "list")){
