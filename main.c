@@ -7,18 +7,18 @@
 
 int main(int argc, char **argv){
 
-  printf("What would you like to do?\n");
 
   while(1){
 
+  printf("What would you like to do?\n");
+
     char input[255];
-    int *list = malloc(100 * sizeof(int));
+    char **list = malloc(255 * sizeof(char));
     char *token = NULL;
-    int count = 0, temp; 
-    //int i;
+    int count = 0, temp, i, found = 0;
 
     //user input
-    fgets(input, 50, stdin);
+    fgets(input, 100, stdin);
 
     token = strtok(input, " \n");
     char *command = token;
@@ -26,8 +26,7 @@ int main(int argc, char **argv){
     // place values after commands into a list
     token = strtok(NULL, " \n");
     while(token != NULL){
-      temp = atoi(token);
-      list[count] = temp;
+      list[count] = token;
       token = strtok(NULL, " \n");
       count++;
     }
@@ -36,11 +35,27 @@ int main(int argc, char **argv){
     }
 
     if(!strcmp(command, "create")){
-      
+      for(i = 0;i < 4;i++){
+	if(tid[i] == 0){
+	  temp = i;
+	  found = 1;
+	  break;
+	}
+      }
+
+      if(found){
+        pthread_create(&tid[temp], NULL, my_thread, NULL);
+      }else{
+	printf("You have already reached the max number of processes(4).\n");
+      }
     }else if(!strcmp(command, "kill")){
 
     }else if(!strcmp(command, "list")){
-
+      for(i = 0;i < 4;i++){
+	if(tid[i] != 0){
+	  printf("%lu\n", (unsigned long) tid[i]);
+	}
+      }
     }else if(!strcmp(command, "mem")){
 
     }else if(!strcmp(command, "allocate")){
@@ -58,8 +73,21 @@ int main(int argc, char **argv){
       free(list);
       continue;
     }
+
+    free(list);
+
   }
 
   return 0;
+
+}
+
+void *my_thread(void *vargp){
+
+  while(1){
+
+  }
+
+  return NULL;
 
 }
