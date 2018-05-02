@@ -34,6 +34,7 @@ int main(int argc, char **argv){
       list[1] = 0x0;
     }
 
+    // create
     if(!strcmp(command, "create")){
       for(i = 0;i < 4;i++){
 	if(tid[i] == 0){
@@ -48,22 +49,44 @@ int main(int argc, char **argv){
       }else{
 	printf("You have already reached the max number of processes(4).\n");
       }
-    }else if(!strcmp(command, "kill")){
 
+    // kill
+    }else if(!strcmp(command, "kill")){
+      unsigned long id = strtoul(list[0], 0, 0);
+      for(i = 0;i < 4;i++){
+        if(id == (long int) tid[i]){
+	  pthread_join(tid[i], NULL);
+	  tid[i] = 0;
+	  found = 1;
+	  break;
+	}
+      }
+
+      if(!found){
+	printf("Thread with id %s does not exist.\n", list[0]);
+      }
+
+    // list
     }else if(!strcmp(command, "list")){
       for(i = 0;i < 4;i++){
 	if(tid[i] != 0){
 	  printf("%lu\n", (unsigned long) tid[i]);
 	}
       }
+
+    // mem
     }else if(!strcmp(command, "mem")){
 
+    // allocate
     }else if(!strcmp(command, "allocate")){
 
+    // read
     }else if(!strcmp(command, "read")){
 
+    // write
     }else if(!strcmp(command, "write")){
 
+    // exit
     }else if(!strcmp(command, "exit")){
       free(list);
       exit(0);
