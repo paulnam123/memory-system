@@ -3,6 +3,7 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include <string.h>
+#include <signal.h>
 #include "functions.h"
 
 int main(int argc, char **argv){
@@ -55,7 +56,7 @@ int main(int argc, char **argv){
       unsigned long id = strtoul(list[0], 0, 0);
       for(i = 0;i < 4;i++){
         if(id == (long int) tid[i]){
-	  pthread_join(tid[i], NULL);
+	  pthread_cancel(tid[i]);
 	  tid[i] = 0;
 	  found = 1;
 	  break;
@@ -89,6 +90,13 @@ int main(int argc, char **argv){
     // exit
     }else if(!strcmp(command, "exit")){
       free(list);
+
+      for(i = 0;i < 4;i++){
+	if(tid[i] != 0){
+	  pthread_cancel(tid[i]);
+	}
+      }
+
       exit(0);
     }else{
       //if none of the commands exist, restart
