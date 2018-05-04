@@ -10,8 +10,19 @@ sem_t mutex;
 
 pthread_t tid[4];
 
-typedef struct page_table{
+typedef struct second_table{
 
-}page_table;
+  int address[1024];
+
+}second_table;
+
+typedef struct first_table{
+
+  unsigned long tid;
+  second_table second_level_table[1024];
+
+}first_table;
+
+first_table first_level_table[4];
 
 #endif
