@@ -15,7 +15,7 @@ int main(int argc, char **argv){
     char input[255];
     char **list = malloc(255 * sizeof(char));
     char *token = NULL;
-    int count = 0, temp, i, found = 0;
+    int count = 0, temp, i, j, found = 0;
 
     //user input
     fgets(input, 100, stdin);
@@ -46,6 +46,11 @@ int main(int argc, char **argv){
 
       if(found){
         pthread_create(&tid[temp], NULL, my_thread, NULL);
+	for(i = 0;i < 4;i++){
+	  if(first_level_table[i].tid == 0){
+	    first_level_table[i].tid = tid[i];
+	  }
+	}
       }else{
 	printf("You have already reached the max number of processes(4).\n");
       }
@@ -54,12 +59,22 @@ int main(int argc, char **argv){
     }else if(!strcmp(command, "kill")){
       unsigned long id = strtoul(list[0], 0, 0);
       for(i = 0;i < 4;i++){
-        if(id == (long int) tid[i]){
+        if(id == (unsigned long) tid[i]){
 	  pthread_cancel(tid[i]);
 	  tid[i] = 0;
 	  found = 1;
+	  temp = i;
 	  break;
 	}
+      }
+
+      // reset tables and tid from first table
+      first_level_table[temp].tid = 0;
+
+      for(i = 0;i < 1024;i++){
+        for(j = 0;j < 1024;j++){
+	  first_level_table[temp].second_level_table[i].address[j].valid = 0;
+        }
       }
 
       if(!found){
@@ -76,15 +91,26 @@ int main(int argc, char **argv){
 
     // mem
     }else if(!strcmp(command, "mem")){
+      /*for(i = 0;i < 4;i++){
+	printf("tid: %lu\n", (unsigned long) tid[i]);
+      }
 
-      //char arr[11];      
-      //for(i = 0;i < 4;i++){
-	
-      //}
+      for(i = 0;i < 4;i++){
+	printf("first_level_table: %lu\n", (unsigned long) first_level_table[i].tid);
+      }*/
 
     // allocate
     }else if(!strcmp(command, "allocate")){
-
+     /* unsigned long id = strtoul(list[0], 0, 0);
+      for(i = 0;i < 4;i++){
+	if(id == (unsigned long) tid[i]){
+	  
+	}
+      }
+      char arr[33];
+      arr[33] = '\0';
+      cse320_malloc(arr, list[0]);
+*/
     // read
     }else if(!strcmp(command, "read")){
 
@@ -125,15 +151,4 @@ void *my_thread(void *vargp){
 
   return NULL;
 
-}
-
-char *int_to_binary(char *buffer, int decimal){
-  int i;
-  buffer[10] = '\0';
-  for(i = 10;i > 0;i--){
-    buffer[i-1] = (decimal & 1) + '0';
-    decimal >>= 1;
-  }
-
-  return buffer;
 }

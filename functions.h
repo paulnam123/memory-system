@@ -1,19 +1,27 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
-void* cse320_malloc(size_t size);
+char* cse320_malloc(char *buffer, int index);
+void int_to_binary(char *buffer, int decimal);
+
 void* cse320_virt_to_phys(void* addr);
 
 void *my_thread(void *vargp);
-char *int_to_binary(char *buffer, int decimal);
 
 sem_t mutex;
 
 pthread_t tid[4];
 
+typedef struct addresses{
+
+  int valid;
+  int addr;
+
+}addresses;
+
 typedef struct second_table{
 
-  int address[1024];
+  addresses address[1024];
 
 }second_table;
 
