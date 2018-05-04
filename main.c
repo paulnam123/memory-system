@@ -8,7 +8,6 @@
 
 int main(int argc, char **argv){
 
-
   while(1){
 
   printf("What would you like to do?\n");
@@ -78,6 +77,11 @@ int main(int argc, char **argv){
     // mem
     }else if(!strcmp(command, "mem")){
 
+      //char arr[11];      
+      //for(i = 0;i < 4;i++){
+	
+      //}
+
     // allocate
     }else if(!strcmp(command, "allocate")){
 
@@ -121,4 +125,15 @@ void *my_thread(void *vargp){
 
   return NULL;
 
+}
+
+char *int_to_binary(char *buffer, int decimal){
+  int i;
+  buffer[10] = '\0';
+  for(i = 10;i > 0;i--){
+    buffer[i-1] = (decimal & 1) + '0';
+    decimal >>= 1;
+  }
+
+  return buffer;
 }

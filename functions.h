@@ -5,6 +5,7 @@ void* cse320_malloc(size_t size);
 void* cse320_virt_to_phys(void* addr);
 
 void *my_thread(void *vargp);
+char *int_to_binary(char *buffer, int decimal);
 
 sem_t mutex;
 
