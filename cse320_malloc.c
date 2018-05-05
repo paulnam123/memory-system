@@ -6,21 +6,11 @@
 
 char* cse320_malloc(char *buffer, int index){
 
-  // argument takes in index of process
-
   int i, j, found = 0;
   for(i = 0;i < 1024;i++){
     for(j = 0;j < 1024;j++){
       if(first_level_table[index].second_level_table[i].address[j].valid == 0){
-/*	char first[11], second[11];
-	char *last = "000000000000\0";
 
-	int_to_binary(first, i);
-	int_to_binary(second, j);
-
-	buffer = strcat(first, second);
-	buffer = strcat(buffer, last);
-*/
 	// show that it is used from now on
 	first_level_table[index].second_level_table[i].address[j].valid = 1;
 	found = 1;
@@ -33,6 +23,9 @@ char* cse320_malloc(char *buffer, int index){
     }
 
   }
+  // use first_level_table[index].second_level_table[i].address[addr].addr = addr; 
+  //check valid bit, if 1 move to next 2nd level table
+  
 
   return buffer;
 

@@ -136,16 +136,17 @@ int main(int argc, char **argv){
     // allocate
     }else if(!strcmp(command, "allocate")){
       // edge case for X = 0
-      temp = atoi(list[0]);
-      if(temp == 0){
+      unsigned long id = strtoul(list[0], 0, 0);
+      if(id == 0){
         printf("Process with id %s does not exist.\n", list[0]);
         free(list);
         continue;
       }
 
-      unsigned long id = strtoul(list[0], 0, 0);
+      // checks the process exists
       for(i = 0;i < 4;i++){
 	if(id == (unsigned long) tid[i]){
+	  // temp is the process index
 	  temp = i;
 	  found = 1;
 	  break;
@@ -155,8 +156,44 @@ int main(int argc, char **argv){
       if(!found){
 	printf("Process with id %s does not exist.\n", list[0]);
       }else{
-        //char arr[33];
-        //arr[32] = '\0';
+      // go to mem to allocate memory
+
+      int fd;
+      char *pipe = "rdpipe";
+      char buf[1024], pnum[20];
+
+      sprintf(pnum, "%d", temp);
+
+      char *str = NULL;
+      char *allocate = " allocate";
+      str = strcat(pnum, allocate);
+
+      mkfifo(pipe, 0666);
+
+      fd = open(pipe, O_WRONLY);
+      write(fd, str, 1024);
+      close(fd);
+
+      unlink(pipe);
+
+      while(1){
+        char *pipe2 = "wrpipe";
+
+        if((fd = open(pipe2, O_RDONLY)) > 0){
+          read(fd, buf, 1024);
+
+          close(fd);
+
+          //printf("Received message: %s\n", buf);
+	  unlink(pipe2);
+	  break;
+        }else{
+	  continue;
+        }
+      } 
+
+
+
 	char *arr = NULL;
         cse320_malloc(arr, temp);
       }
@@ -173,7 +210,7 @@ int main(int argc, char **argv){
       mkfifo(pipe, 0666);
 
       fd = open(pipe, O_WRONLY);
-      write(fd, "hi", sizeof("hi"));
+      //write(fd, "hi", sizeof("hi"));
       close(fd);
 
       unlink(pipe);
@@ -186,7 +223,7 @@ int main(int argc, char **argv){
 
           close(fd);
 
-          printf("Received message: %s\n", buf);
+          //printf("Received message: %s\n", buf);
 	  unlink(pipe2);
 	  break;
         }else{
@@ -196,6 +233,7 @@ int main(int argc, char **argv){
 
     // write
     }else if(!strcmp(command, "write")){
+      
 
     // exit
     }else if(!strcmp(command, "exit")){
