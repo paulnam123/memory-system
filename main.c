@@ -184,7 +184,10 @@ int main(int argc, char **argv){
 
           close(fd);
 
-          printf("Received message: %s\n", buf);
+          //printf("Received message: %s\n", buf);
+	  int index = atoi(buf);
+          printf("Received message: %d\n", index);
+
 	  unlink(pipe2);
 	  break;
         }else{

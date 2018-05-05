@@ -10,7 +10,7 @@ int main(int argc, char **argv){
 
   void *memory = malloc(1024); 
   int n;
-  for(n = 0;n < 1024;n++){
+  for(n = 0;n < 1024;n += 4){
     *(int*)(memory+n) = 0;
   }
 
