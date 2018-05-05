@@ -109,7 +109,7 @@ int main(int argc, char **argv){
         continue;
       }
 
-     unsigned long id = strtoul(list[0], 0, 0);
+      unsigned long id = strtoul(list[0], 0, 0);
       for(i = 0;i < 4;i++){
 	if(id == (unsigned long) tid[i]){
 	  temp = i;
@@ -124,6 +124,7 @@ int main(int argc, char **argv){
         //char arr[33];
         //arr[32] = '\0';
 	char *arr = NULL;
+	printf("%d\n", temp);
         cse320_malloc(arr, temp);
       }
 
