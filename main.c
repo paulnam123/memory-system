@@ -91,6 +91,44 @@ int main(int argc, char **argv){
 
     // mem
     }else if(!strcmp(command, "mem")){
+      // edge case for X = 0
+      temp = atoi(list[0]);
+      if(temp == 0){
+        printf("Process with id %s does not exist.\n", list[0]);
+        free(list);
+        continue;
+      }
+
+      unsigned long id = strtoul(list[0], 0, 0);
+      for(i = 0;i < 4;i++){
+	if(id == (unsigned long) tid[i]){
+	  temp = i;
+	  found = 1;
+	  break;
+	}
+      }
+
+      if(!found){
+	printf("Process with id %s does not exist.\n", list[0]);
+      }else{
+	char *arr = NULL;
+	for(i = 0;i < 1024;i++){
+	  for(j = 0;j < 1024;j++){
+	    if(first_level_table[temp].second_level_table[i].address[j].valid == 1){
+	      char first[11], second[11];
+	      char *last = "000000000000\0";
+
+	      int_to_binary(first, i);
+	      int_to_binary(second, j);
+
+	      arr = strcat(first, second);
+	      arr = strcat(arr, last);
+	      printf("%s\n", arr);
+	    }
+	  }
+	}
+      }
+
       /*for(i = 0;i < 4;i++){
 	printf("tid: %lu\n", (unsigned long) tid[i]);
       }
@@ -124,7 +162,6 @@ int main(int argc, char **argv){
         //char arr[33];
         //arr[32] = '\0';
 	char *arr = NULL;
-	printf("%d\n", temp);
         cse320_malloc(arr, temp);
       }
 
@@ -168,4 +205,16 @@ void *my_thread(void *vargp){
 
   return NULL;
 
+}
+
+void int_to_binary(char *buffer, int decimal){
+  int i;
+  buffer[10] = '\0';
+  for(i = 10;i > 0;i--){
+    buffer[i-1] = (decimal & 1) + '0';
+    decimal >>= 1;
+  }
+  printf("binary: %s\n", buffer);
+
+  return;
 }
