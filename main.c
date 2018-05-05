@@ -4,6 +4,10 @@
 #include <semaphore.h>
 #include <string.h>
 #include <signal.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include "functions.h"
 
 int main(int argc, char **argv){
@@ -129,14 +133,6 @@ int main(int argc, char **argv){
 	}
       }
 
-      /*for(i = 0;i < 4;i++){
-	printf("tid: %lu\n", (unsigned long) tid[i]);
-      }
-
-      for(i = 0;i < 4;i++){
-	printf("first_level_table: %lu\n", (unsigned long) first_level_table[i].tid);
-      }*/
-
     // allocate
     }else if(!strcmp(command, "allocate")){
       // edge case for X = 0
@@ -167,6 +163,30 @@ int main(int argc, char **argv){
 
     // read
     }else if(!strcmp(command, "read")){
+      
+      
+
+      int fd;
+      char *pipe = "rdpipe";
+      //char buf[1024];
+
+      mkfifo(pipe, 0666);
+
+      fd = open(pipe, O_WRONLY);
+      write(fd, "hi", sizeof("hi"));
+      close(fd);
+
+      unlink(pipe);
+
+      /*char *pipe2 = "wrpipe";
+
+      fd = open(pipe2, O_RDONLY);
+      read(fd, buf, 1024);
+
+      close(fd);
+
+      printf("Received message: %s\n", buf);
+      */
 
     // write
     }else if(!strcmp(command, "write")){
@@ -214,7 +234,6 @@ void int_to_binary(char *buffer, int decimal){
     buffer[i-1] = (decimal & 1) + '0';
     decimal >>= 1;
   }
-  printf("binary: %s\n", buffer);
 
   return;
 }
