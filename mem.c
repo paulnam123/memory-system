@@ -26,6 +26,12 @@ int main(int argc, char **argv){
   printf("%d\n", z);
 */
 
+  int valid[1024];
+
+  for(n = 0;n < 1024;n++){
+    valid[n] = 0;
+  }
+
   while(1){
 
     int fd;
@@ -34,8 +40,9 @@ int main(int argc, char **argv){
 
     if((fd = open(pipe, O_RDONLY)) > 0){
       read(fd, buf, 1024);
- 
-      sleep(5);
+
+      // change sleep back to 5
+      sleep(1);
 
       //printf("Received message: %s\n", buf);
       close(fd);
@@ -60,14 +67,15 @@ int main(int argc, char **argv){
 
       // get the process number
       int process = atoi(list[0]);
-      segment_offset = process * 64;
+      segment_offset = process * 256;
 
       if(!strcmp(list[1], "allocate")){
-	for(i = segment_offset;i < (segment_offset + 64);i++){
-	   if((*(int*)(memory+i)) == 0){
-	     addr = i;
-	     break;
-	   }
+	for(i = segment_offset;i < (segment_offset + 64);i+=4){
+	  if(valid[i] == 0){
+	    addr = i;
+	    valid[i] = 1;
+	    break;
+	  }
 	}
 
 	char addrback[100];
