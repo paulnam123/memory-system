@@ -78,7 +78,7 @@ int main(int argc, char **argv){
       }
 
       if(!found){
-	printf("Thread with id %s does not exist.\n", list[0]);
+	printf("Process with id %s does not exist.\n", list[0]);
       }
 
     // list
@@ -101,16 +101,32 @@ int main(int argc, char **argv){
 
     // allocate
     }else if(!strcmp(command, "allocate")){
-     /* unsigned long id = strtoul(list[0], 0, 0);
+      // edge case for X = 0
+      temp = atoi(list[0]);
+      if(temp == 0){
+        printf("Process with id %s does not exist.\n", list[0]);
+        free(list);
+        continue;
+      }
+
+     unsigned long id = strtoul(list[0], 0, 0);
       for(i = 0;i < 4;i++){
 	if(id == (unsigned long) tid[i]){
-	  
+	  temp = i;
+	  found = 1;
+	  break;
 	}
       }
-      char arr[33];
-      arr[33] = '\0';
-      cse320_malloc(arr, list[0]);
-*/
+
+      if(!found){
+	printf("Process with id %s does not exist.\n", list[0]);
+      }else{
+        //char arr[33];
+        //arr[32] = '\0';
+	char *arr = NULL;
+        cse320_malloc(arr, temp);
+      }
+
     // read
     }else if(!strcmp(command, "read")){
 
