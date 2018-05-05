@@ -168,7 +168,7 @@ int main(int argc, char **argv){
 
       int fd;
       char *pipe = "rdpipe";
-      //char buf[1024];
+      char buf[1024];
 
       mkfifo(pipe, 0666);
 
@@ -178,15 +178,21 @@ int main(int argc, char **argv){
 
       unlink(pipe);
 
-      /*char *pipe2 = "wrpipe";
+      while(1){
+        char *pipe2 = "wrpipe";
 
-      fd = open(pipe2, O_RDONLY);
-      read(fd, buf, 1024);
+        if((fd = open(pipe2, O_RDONLY)) > 0){
+          read(fd, buf, 1024);
 
-      close(fd);
+          close(fd);
 
-      printf("Received message: %s\n", buf);
-      */
+          printf("Received message: %s\n", buf);
+	  unlink(pipe2);
+	  break;
+        }else{
+	  continue;
+        }
+      } 
 
     // write
     }else if(!strcmp(command, "write")){
