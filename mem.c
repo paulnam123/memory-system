@@ -8,15 +8,24 @@
 
 int main(int argc, char **argv){
 
-  void *memory = malloc(1024);
-/*
-  *(int*)(memory) = 10;
+  void *memory = malloc(1024); 
+  int n;
+  for(n = 0;n < 1024;n++){
+    *(int*)(memory+n) = 0;
+  }
+
+/*  *(int*)(memory) = 10;
+  *(int*)(memory+4) = 54;
+  *(int*)(memory+8) = 23;
   int x = *(int*)(memory);
-  int y = *(int*)(memory+1);
+  int y = *(int*)(memory+4);
+  int z = *(int*)(memory+8);
 
   printf("%d\n", x);
   printf("%d\n", y);
+  printf("%d\n", z);
 */
+
   while(1){
 
     int fd;
@@ -37,7 +46,7 @@ int main(int argc, char **argv){
       // first is process, then command
       char **list = malloc(255 * sizeof(char));
       char *token = NULL;
-      int count = 0, i;
+      int count = 0, i, addr, segment_offset;
 
       token = strtok(buf, " \n");
       while(token != NULL){
@@ -51,26 +60,34 @@ int main(int argc, char **argv){
 
       // get the process number
       int process = atoi(list[0]);
+      segment_offset = process * 64;
 
       if(!strcmp(list[1], "allocate")){
-	
+	for(i = segment_offset;i < (segment_offset + 64);i++){
+	   if((*(int*)(memory+i)) == 0){
+	     addr = i;
+	     break;
+	   }
+	}
+
+	char addrback[100];
+        char *pipe2 = "wrpipe";
+
+	sprintf(addrback, "%d", addr);
+
+        mkfifo(pipe2, 0666);
+
+        fd = open(pipe2, O_WRONLY);
+        write(fd, addrback, 100);
+        close(fd);
+    
+        unlink(pipe2);
+
       }else if(!strcmp(list[1], "read")){
 
       }else if(!strcmp(list[1], "write")){
 
       }
-
-
-      // for returning for read/write
-      char *pipe2 = "wrpipe";
-
-      mkfifo(pipe2, 0666);
-
-      fd = open(pipe2, O_WRONLY);
-      //write(fd, "bye", sizeof("bye"));
-      close(fd);
-    
-      unlink(pipe2);
 
 
     }else{

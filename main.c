@@ -184,7 +184,7 @@ int main(int argc, char **argv){
 
           close(fd);
 
-          //printf("Received message: %s\n", buf);
+          printf("Received message: %s\n", buf);
 	  unlink(pipe2);
 	  break;
         }else{
