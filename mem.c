@@ -33,7 +33,7 @@ int main(int argc, char **argv){
       // change sleep back to 5
       sleep(1);
 
-      printf("Received message: %s\n", buf);
+      //printf("Received message: %s\n", buf);
       close(fd);
 
       unlink(pipe);

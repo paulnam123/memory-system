@@ -8,7 +8,7 @@ char* cse320_malloc(char *buffer, int index, int process_index){
 
   int i, found = 0, mod_index;
 
-  mod_index = index/4;
+  mod_index = index - (process_index * 256);
 
   for(i = 0;i < 1024;i++){
     if(first_level_table[process_index].second_level_table[i].address[mod_index].used == 0){
