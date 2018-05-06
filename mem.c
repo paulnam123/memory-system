@@ -38,7 +38,7 @@ int main(int argc, char **argv){
       // change sleep back to 5
       sleep(1);
 
-      //printf("Received message: %s\n", buf);
+      printf("Received message: %s\n", buf);
       close(fd);
 
       unlink(pipe);
@@ -73,7 +73,7 @@ int main(int argc, char **argv){
 	  }
 	}
 
-	//printf("addr: %d\n", addr);
+	printf("addr: %d\n", addr);
 
 	char addrback[100];
         char *pipe2 = "wrpipe";
@@ -120,18 +120,25 @@ int main(int argc, char **argv){
 	  int received_value = atoi(list[3]);
 	  *(int*)(memory+received_index) = received_value;
 	}
+	
+	char *success = "success";
+        char *pipe2 = "wrpipe";
 
-	  	
-	  char *success = "success";
-          char *pipe2 = "wrpipe";
+        mkfifo(pipe2, 0666);
 
-          mkfifo(pipe2, 0666);
-
-          fd = open(pipe2, O_WRONLY);
-          write(fd, success, 100);
-          close(fd);
+        fd = open(pipe2, O_WRONLY);
+        write(fd, success, 100);
+        close(fd);
     
-          unlink(pipe2);
+        unlink(pipe2);
+
+      }else if(!strcmp(list[1], "kill")){
+
+	for(i = process;i < (process + 256);i+=4){
+	    valid[i] = 0;
+	   
+	}
+
       }
 
       free(list);    

@@ -72,18 +72,39 @@ int main(int argc, char **argv){
 	}
       }
 
-      // reset tables and tid from first table
-      first_level_table[temp].tid = 0;
-
-      for(i = 0;i < 1024;i++){
-        for(j = 0;j < 1024;j++){
-	  first_level_table[temp].second_level_table[i].address[j].used = 0;
-        }
-      }
-
       if(!found){
 	printf("Process with id %s does not exist.\n", list[0]);
+      }else{
+        // reset tables and tid from first table
+        first_level_table[temp].tid = 0;
+
+        for(i = 0;i < 1024;i++){
+          for(j = 0;j < 1024;j++){
+	    first_level_table[temp].second_level_table[i].address[j].used = 0;
+          }
+        }
+
+	// remove traces of killed process in memory
+	  
+        int fd;
+        char *pipe = "rdpipe";
+        char pnum[20];
+
+        sprintf(pnum, "%d", temp);
+
+        char *str = NULL;
+        char *kill = " kill";
+        str = strcat(pnum, kill);
+
+        mkfifo(pipe, 0666);
+
+        fd = open(pipe, O_WRONLY);
+        write(fd, str, 1024);
+        close(fd);
+
+        unlink(pipe);
       }
+
 
     // list
     }else if(!strcmp(command, "list")){
