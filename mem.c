@@ -42,7 +42,8 @@ int main(int argc, char **argv){
       // first is process, then command
       char **list = malloc(255 * sizeof(char));
       char *token = NULL;
-      int count = 0, i, addr, segment_offset;
+      int count = 0, i, addr; 
+	//segment_offset;
 
       token = strtok(buf, " \n");
       while(token != NULL){
@@ -56,16 +57,18 @@ int main(int argc, char **argv){
 
       // get the process number
       int process = atoi(list[0]);
-      segment_offset = process * 256;
+      process = process * 256;
 
       if(!strcmp(list[1], "allocate")){
-	for(i = segment_offset;i < (segment_offset + 64);i+=4){
+	for(i = process;i < (process + 256);i+=4){
 	  if(valid[i] == 0){
 	    addr = i;
 	    valid[i] = 1;
 	    break;
 	  }
 	}
+
+	printf("addr: %d\n", addr);
 
 	char addrback[100];
         char *pipe2 = "wrpipe";
