@@ -3,8 +3,16 @@
 #include <semaphore.h>
 #include "functions.h"
 
-void* cse320_virt_to_phys(int process_index){
+int cse320_virt_to_phys(int process_index, int first, int second){
 
-  return NULL;
+  int phys;
+
+  if(first_level_table[process_index].second_level_table[first].address[second].used == 1){
+    phys = first_level_table[process_index].second_level_table[first].address[second].addr;
+  }
+
+  // maybe return -1 for error? 
+
+  return phys;
 
 }

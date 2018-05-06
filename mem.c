@@ -33,7 +33,7 @@ int main(int argc, char **argv){
       // change sleep back to 5
       sleep(1);
 
-      //printf("Received message: %s\n", buf);
+      printf("Received message: %s\n", buf);
       close(fd);
 
       unlink(pipe);
@@ -83,7 +83,16 @@ int main(int argc, char **argv){
       }else if(!strcmp(list[1], "read")){
 
       }else if(!strcmp(list[1], "write")){
+	int received_index = atoi(list[2]);
+	if(!(received_index % 4)){
+	  // error not aligned
+	  // another else if for out of range
+	}else{
+	  int received_value = atoi(list[3]);
+	  *(int*)(memory+received_index) = received_value;
+	}
 
+	
       }
 
       free(list);    

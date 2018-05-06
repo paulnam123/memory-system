@@ -204,7 +204,6 @@ int main(int argc, char **argv){
     }else if(!strcmp(command, "read")){
       
       
-
       int fd;
       char *pipe = "rdpipe";
       char buf[1024];
@@ -236,14 +235,13 @@ int main(int argc, char **argv){
     // write
     }else if(!strcmp(command, "write")){ 
       // edge case for X = 0
-      temp = atoi(list[0]);
-      if(temp == 0){
+      unsigned long id = strtoul(list[0], 0, 0);
+      if(id == 0){
         printf("Process with id %s does not exist.\n", list[0]);
         free(list);
         continue;
       }
 
-      unsigned long id = strtoul(list[0], 0, 0);
       for(i = 0;i < 4;i++){
 	if(id == (unsigned long) tid[i]){
 	  temp = i;
@@ -265,52 +263,68 @@ int main(int argc, char **argv){
 	strncpy(part1, list[1], 10);
 	strncpy(part2, list[1]+10, 10);
 
-        // go to mem to read memory
-        int fd;
-        char *pipe = "rdpipe";
-        char buf[1024], pnum[20];
+	int p1 = strtol(part1, NULL, 2);
+	int p2 = strtol(part2, NULL, 2);
 
-        sprintf(pnum, "%d", temp);
+	// temp here is process index
+	if(first_level_table[temp].second_level_table[p1].address[p2].used == 1){
 
-        char *str = NULL;
-        char *readmem = " read";
+          // go to mem to read memory
+          int fd;
+          char *pipe = "rdpipe";
+          char buf[1024], pnum[20];
 
-	//cse320_virt_to_phys();
+          sprintf(pnum, "%d", temp);
 
-        str = strcat(pnum, readmem);
+          char *str = NULL;
+          char *writemem = " write ";
 
-        mkfifo(pipe, 0666);
+	  int phys = cse320_virt_to_phys(temp, p1, p2);
 
-        fd = open(pipe, O_WRONLY);
-        write(fd, str, 1024);
-        close(fd);
+	  char phys_addr[20];
+	  sprintf(phys_addr, "%d", phys);
 
-        unlink(pipe);
+	  // used for extra space to place writing value after
+	  char *phys_addr_space = strcat(phys_addr, " ");
 
-        while(1){
-          char *pipe2 = "wrpipe";
+          str = strcat(pnum, writemem);
+	  str = strcat(str, phys_addr_space);
+	  str = strcat(str, list[2]);
 
-          if((fd = open(pipe2, O_RDONLY)) > 0){
-            read(fd, buf, 1024);
+          mkfifo(pipe, 0666);
 
-            close(fd);
+          fd = open(pipe, O_WRONLY);
+          write(fd, str, 1024);
+          close(fd);
 
-	    int index = atoi(buf);
+          unlink(pipe);
 
-	    unlink(pipe2);
+          while(1){
+            char *pipe2 = "wrpipe";
 
-	    char *arr = NULL;
-            cse320_malloc(arr, index, temp);
+            if((fd = open(pipe2, O_RDONLY)) > 0){
+              read(fd, buf, 1024);
 
-	    break;
+              close(fd);
 
-          }else{
-	    continue;
+	      int index = atoi(buf);
+
+	      unlink(pipe2);
+
+	      char *arr = NULL;
+              cse320_malloc(arr, index, temp);
+
+	      break;
+
+            }else{
+	      continue;
+            }
           }
-        }   
+	}else{
+	  printf("Virtual memory does not exist.\n");
+	}   
 
         
-
       }
 
     // exit

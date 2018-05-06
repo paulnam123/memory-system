@@ -4,7 +4,7 @@
 char* cse320_malloc(char *buffer, int index, int process_index);
 void int_to_binary(char *buffer, int decimal);
 
-void* cse320_virt_to_phys(int process_index);
+int cse320_virt_to_phys(int process_index, int first, int second);
 
 void *my_thread(void *vargp);
 
