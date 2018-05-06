@@ -32,6 +32,15 @@ typedef struct first_table{
 
 }first_table;
 
+typedef struct cache{
+
+  int addr;
+  int value;
+
+}cache;
+
 first_table first_level_table[4];
+
+cache cache_table[4];
 
 #endif

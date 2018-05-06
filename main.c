@@ -236,58 +236,78 @@ int main(int argc, char **argv){
 
 	// temp here is process index
 	if(first_level_table[temp].second_level_table[p1].address[p2].used == 1){
-
-          // go to mem to read memory
-
-          int fd;
-          char *pipe = "rdpipe";
-          char buf[1024], pnum[20];
-
-          sprintf(pnum, "%d", temp);
-
-          char *str = NULL;
-          char *readmem = " read ";
-
+	
+	  // read cache first
 	  int phys = cse320_virt_to_phys(temp, p1, p2);
 
-	  char phys_addr[20];
-	  sprintf(phys_addr, "%d", phys);
+	  // mod 4 to get index of cache (direct mapped)
+	  int cache_index = phys % 4;
+	  
+	  if(cache_table[cache_index].addr == phys){
+	    printf("Cache hit\n");
+	    printf("%d\n", cache_table[cache_index].value);
+	  }else{
+	    printf("Cache miss\n");
 
-          str = strcat(pnum, readmem);
-	  str = strcat(str, phys_addr);
+            // go to mem to read memory
 
-          mkfifo(pipe, 0666);
+            int fd;
+            char *pipe = "rdpipe";
+            char buf[1024], pnum[20];
 
-          fd = open(pipe, O_WRONLY);
-          write(fd, str, 1024);
-          close(fd);
+            sprintf(pnum, "%d", temp);
 
-          unlink(pipe);
+            char *str = NULL;
+            char *readmem = " read ";
 
-          while(1){
-            char *pipe2 = "wrpipe";
+	    //int phys = cse320_virt_to_phys(temp, p1, p2);
 
-            if((fd = open(pipe2, O_RDONLY)) > 0){
-              read(fd, buf, 1024);
+	    char phys_addr[20];
+	    sprintf(phys_addr, "%d", phys);
 
-              close(fd);
+            str = strcat(pnum, readmem);
+	    str = strcat(str, phys_addr);
 
-	      int retval = atoi(buf);
+            mkfifo(pipe, 0666);
 
-	      printf("%d\n", retval);
+            fd = open(pipe, O_WRONLY);
+            write(fd, str, 1024);
+            close(fd);
 
-	      unlink(pipe2);
+            unlink(pipe);
+
+	    int retval;
+
+            while(1){
+              char *pipe2 = "wrpipe";
+
+              if((fd = open(pipe2, O_RDONLY)) > 0){
+                read(fd, buf, 1024);
+
+                close(fd);
+
+	        retval = atoi(buf);
+
+	        unlink(pipe2);
 
 
-	      break;
+	        break;
 
-            }else{
-	      continue;
-            }
-          }   
+              }else{
+	        continue;
+              }
+            } 
+  
+	  
+	    // update value in the cache table
+	    cache_table[cache_index].addr = phys;
+	    cache_table[cache_index].value = retval;
+	    
+	    printf("%d\n", retval);
+	  }
 
 	}else{
-	  printf("Virtual memory does not exist.\n");
+	  printf("Virtual memory address does not exist.\n");
 	}
       } 
 
@@ -328,6 +348,23 @@ int main(int argc, char **argv){
 	// temp here is process index
 	if(first_level_table[temp].second_level_table[p1].address[p2].used == 1){
 
+	  // write to cache first (write through)
+	  int phys = cse320_virt_to_phys(temp, p1, p2);
+
+	  // mod 4 to get index of cache (direct mapped)
+	  int cache_index = phys % 4;
+	  
+	  if(cache_table[cache_index].addr == phys){
+	    printf("Cache hit\n");
+	  }else{
+	    printf("Cache miss\n");
+	  }
+
+	  // update value in the cache table
+	  cache_table[cache_index].addr = phys;
+	  int value = atoi(list[2]);
+	  cache_table[cache_index].value = value;
+
           // go to mem to write memory
           int fd;
           char *pipe = "rdpipe";
@@ -338,7 +375,7 @@ int main(int argc, char **argv){
           char *str = NULL;
           char *writemem = " write ";
 
-	  int phys = cse320_virt_to_phys(temp, p1, p2);
+	  //int phys = cse320_virt_to_phys(temp, p1, p2);
 
 	  char phys_addr[20];
 	  sprintf(phys_addr, "%d", phys);
@@ -375,7 +412,7 @@ int main(int argc, char **argv){
             }
           }
 	}else{
-	  printf("Virtual memory does not exist.\n");
+	  printf("Virtual memory adress does not exist.\n");
 	}   
 
         

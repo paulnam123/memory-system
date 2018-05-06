@@ -68,7 +68,7 @@ int main(int argc, char **argv){
 	  }
 	}
 
-	printf("addr: %d\n", addr);
+	//printf("addr: %d\n", addr);
 
 	char addrback[100];
         char *pipe2 = "wrpipe";
