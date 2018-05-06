@@ -35,9 +35,6 @@ int main(int argc, char **argv){
     if((fd = open(pipe, O_RDONLY)) > 0){
       read(fd, buf, 1024);
 
-      // change sleep back to 5
-      sleep(1);
-
       printf("Received message: %s\n", buf);
       close(fd);
 
@@ -65,6 +62,9 @@ int main(int argc, char **argv){
       process = process * 256;
 
       if(!strcmp(list[1], "allocate")){
+        // change sleep back to 5
+        sleep(1);
+
 	for(i = process;i < (process + 256);i+=4){
 	  if(valid[i] == 0){
 	    addr = i;
@@ -91,6 +91,9 @@ int main(int argc, char **argv){
       // read
       }else if(!strcmp(list[1], "read")){
 
+        // change sleep back to 5
+        sleep(1);
+
 	int received_index = atoi(list[2]);
 	if(received_index % 4){
 	  // error not aligned
@@ -112,6 +115,9 @@ int main(int argc, char **argv){
 	}
 
       }else if(!strcmp(list[1], "write")){
+        // change sleep back to 5
+        sleep(1);
+
 	int received_index = atoi(list[2]);
 	if(received_index % 4){
 	  // error not aligned
