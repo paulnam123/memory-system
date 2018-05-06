@@ -234,8 +234,84 @@ int main(int argc, char **argv){
       } 
 
     // write
-    }else if(!strcmp(command, "write")){
-      
+    }else if(!strcmp(command, "write")){ 
+      // edge case for X = 0
+      temp = atoi(list[0]);
+      if(temp == 0){
+        printf("Process with id %s does not exist.\n", list[0]);
+        free(list);
+        continue;
+      }
+
+      unsigned long id = strtoul(list[0], 0, 0);
+      for(i = 0;i < 4;i++){
+	if(id == (unsigned long) tid[i]){
+	  temp = i;
+	  found = 1;
+	  break;
+	}
+      }
+
+      if(!found){
+	printf("Process with id %s does not exist.\n", list[0]);
+      }else{
+
+	// check if virtual memory exists
+	char part1[11];
+	char part2[11];
+	part1[10] = '\0';
+	part2[10] = '\0';
+
+	strncpy(part1, list[1], 10);
+	strncpy(part2, list[1]+10, 10);
+
+        // go to mem to read memory
+        int fd;
+        char *pipe = "rdpipe";
+        char buf[1024], pnum[20];
+
+        sprintf(pnum, "%d", temp);
+
+        char *str = NULL;
+        char *readmem = " read";
+
+	//cse320_virt_to_phys();
+
+        str = strcat(pnum, readmem);
+
+        mkfifo(pipe, 0666);
+
+        fd = open(pipe, O_WRONLY);
+        write(fd, str, 1024);
+        close(fd);
+
+        unlink(pipe);
+
+        while(1){
+          char *pipe2 = "wrpipe";
+
+          if((fd = open(pipe2, O_RDONLY)) > 0){
+            read(fd, buf, 1024);
+
+            close(fd);
+
+	    int index = atoi(buf);
+
+	    unlink(pipe2);
+
+	    char *arr = NULL;
+            cse320_malloc(arr, index, temp);
+
+	    break;
+
+          }else{
+	    continue;
+          }
+        }   
+
+        
+
+      }
 
     // exit
     }else if(!strcmp(command, "exit")){
