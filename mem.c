@@ -80,11 +80,32 @@ int main(int argc, char **argv){
     
         unlink(pipe2);
 
+      // read
       }else if(!strcmp(list[1], "read")){
+
+	int received_index = atoi(list[2]);
+	if(received_index % 4){
+	  // error not aligned
+	}else{
+	  int retval = *(int*)(memory+received_index);  
+  	  char retvalback[100];
+          char *pipe2 = "wrpipe";
+
+	  sprintf(retvalback, "%d", retval);
+
+          mkfifo(pipe2, 0666);
+
+          fd = open(pipe2, O_WRONLY);
+          write(fd, retvalback, 100);
+          close(fd);
+    
+          unlink(pipe2);
+
+	}
 
       }else if(!strcmp(list[1], "write")){
 	int received_index = atoi(list[2]);
-	if(!(received_index % 4)){
+	if(received_index % 4){
 	  // error not aligned
 	  // another else if for out of range
 	}else{
@@ -92,7 +113,17 @@ int main(int argc, char **argv){
 	  *(int*)(memory+received_index) = received_value;
 	}
 
-	
+	  	
+	  char *success = "success";
+          char *pipe2 = "wrpipe";
+
+          mkfifo(pipe2, 0666);
+
+          fd = open(pipe2, O_WRONLY);
+          write(fd, success, 100);
+          close(fd);
+    
+          unlink(pipe2);
       }
 
       free(list);    

@@ -201,35 +201,94 @@ int main(int argc, char **argv){
       }
 
     // read
-    }else if(!strcmp(command, "read")){
+    }else if(!strcmp(command, "read")){ 
+      // edge case for X = 0
+      unsigned long id = strtoul(list[0], 0, 0);
+      if(id == 0){
+        printf("Process with id %s does not exist.\n", list[0]);
+        free(list);
+        continue;
+      }
+
+      for(i = 0;i < 4;i++){
+	if(id == (unsigned long) tid[i]){
+	  temp = i;
+	  found = 1;
+	  break;
+	}
+      }
+
+      if(!found){
+	printf("Process with id %s does not exist.\n", list[0]);
+      }else{
       
-      
-      int fd;
-      char *pipe = "rdpipe";
-      char buf[1024];
+	// check if virtual memory exists
+	char part1[11];
+	char part2[11];
+	part1[10] = '\0';
+	part2[10] = '\0';
 
-      mkfifo(pipe, 0666);
+	strncpy(part1, list[1], 10);
+	strncpy(part2, list[1]+10, 10);
 
-      fd = open(pipe, O_WRONLY);
-      //write(fd, "hi", sizeof("hi"));
-      close(fd);
+	int p1 = strtol(part1, NULL, 2);
+	int p2 = strtol(part2, NULL, 2);
 
-      unlink(pipe);
+	// temp here is process index
+	if(first_level_table[temp].second_level_table[p1].address[p2].used == 1){
 
-      while(1){
-        char *pipe2 = "wrpipe";
+          // go to mem to read memory
 
-        if((fd = open(pipe2, O_RDONLY)) > 0){
-          read(fd, buf, 1024);
+          int fd;
+          char *pipe = "rdpipe";
+          char buf[1024], pnum[20];
 
+          sprintf(pnum, "%d", temp);
+
+          char *str = NULL;
+          char *readmem = " read ";
+
+	  int phys = cse320_virt_to_phys(temp, p1, p2);
+
+	  char phys_addr[20];
+	  sprintf(phys_addr, "%d", phys);
+
+          str = strcat(pnum, readmem);
+	  str = strcat(str, phys_addr);
+
+          mkfifo(pipe, 0666);
+
+          fd = open(pipe, O_WRONLY);
+          write(fd, str, 1024);
           close(fd);
 
-          //printf("Received message: %s\n", buf);
-	  unlink(pipe2);
-	  break;
-        }else{
-	  continue;
-        }
+          unlink(pipe);
+
+          while(1){
+            char *pipe2 = "wrpipe";
+
+            if((fd = open(pipe2, O_RDONLY)) > 0){
+              read(fd, buf, 1024);
+
+              close(fd);
+
+	      int retval = atoi(buf);
+
+	      printf("%d\n", retval);
+
+	      unlink(pipe2);
+
+
+	      break;
+
+            }else{
+	      continue;
+            }
+          }   
+
+	}else{
+	  printf("Virtual memory does not exist.\n");
+	}
       } 
 
     // write
@@ -269,7 +328,7 @@ int main(int argc, char **argv){
 	// temp here is process index
 	if(first_level_table[temp].second_level_table[p1].address[p2].used == 1){
 
-          // go to mem to read memory
+          // go to mem to write memory
           int fd;
           char *pipe = "rdpipe";
           char buf[1024], pnum[20];
@@ -307,12 +366,7 @@ int main(int argc, char **argv){
 
               close(fd);
 
-	      int index = atoi(buf);
-
 	      unlink(pipe2);
-
-	      char *arr = NULL;
-              cse320_malloc(arr, index, temp);
 
 	      break;
 
