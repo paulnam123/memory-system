@@ -34,6 +34,7 @@ typedef struct first_table{
 
 typedef struct cache{
 
+  int valid;
   int addr;
   int value;
 

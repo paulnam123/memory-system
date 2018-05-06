@@ -4,11 +4,16 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <string.h>
+#include <signal.h>
 #include <unistd.h>
+#include "mem.h"
 
+void *memory = NULL;
 int main(int argc, char **argv){
 
-  void *memory = malloc(1024); 
+  signal(SIGINT, sigint_handler);
+
+  memory = malloc(1024); 
   int n;
   for(n = 0;n < 1024;n += 4){
     *(int*)(memory+n) = 0;
@@ -136,8 +141,10 @@ int main(int argc, char **argv){
     }
   }
 
+  exit(0);
+}
+
+void sigint_handler(int sig){
   free(memory);
-
-
   exit(0);
 }
