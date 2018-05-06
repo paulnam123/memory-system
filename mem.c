@@ -14,17 +14,6 @@ int main(int argc, char **argv){
     *(int*)(memory+n) = 0;
   }
 
-/*  *(int*)(memory) = 10;
-  *(int*)(memory+4) = 54;
-  *(int*)(memory+8) = 23;
-  int x = *(int*)(memory);
-  int y = *(int*)(memory+4);
-  int z = *(int*)(memory+8);
-
-  printf("%d\n", x);
-  printf("%d\n", y);
-  printf("%d\n", z);
-*/
 
   int valid[1024];
 
@@ -97,6 +86,7 @@ int main(int argc, char **argv){
 
       }
 
+      free(list);    
 
     }else{
       continue;

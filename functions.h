@@ -1,10 +1,10 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
-char* cse320_malloc(char *buffer, int index);
+char* cse320_malloc(char *buffer, int index, int process_index);
 void int_to_binary(char *buffer, int decimal);
 
-void* cse320_virt_to_phys(void* addr);
+void* cse320_virt_to_phys(int process_index);
 
 void *my_thread(void *vargp);
 
@@ -14,7 +14,7 @@ pthread_t tid[4];
 
 typedef struct addresses{
 
-  int valid;
+  int used;
   int addr;
 
 }addresses;

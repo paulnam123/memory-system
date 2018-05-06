@@ -3,7 +3,7 @@
 #include <semaphore.h>
 #include "functions.h"
 
-void* cse320_virt_to_phys(void* addr){
+void* cse320_virt_to_phys(int process_index){
 
   return NULL;
 

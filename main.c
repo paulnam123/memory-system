@@ -77,7 +77,7 @@ int main(int argc, char **argv){
 
       for(i = 0;i < 1024;i++){
         for(j = 0;j < 1024;j++){
-	  first_level_table[temp].second_level_table[i].address[j].valid = 0;
+	  first_level_table[temp].second_level_table[i].address[j].used = 0;
         }
       }
 
@@ -118,7 +118,7 @@ int main(int argc, char **argv){
 	char *arr = NULL;
 	for(i = 0;i < 1024;i++){
 	  for(j = 0;j < 1024;j++){
-	    if(first_level_table[temp].second_level_table[i].address[j].valid == 1){
+	    if(first_level_table[temp].second_level_table[i].address[j].used == 1){
 	      char first[11], second[11];
 	      char *last = "000000000000\0";
 
@@ -156,49 +156,48 @@ int main(int argc, char **argv){
       if(!found){
 	printf("Process with id %s does not exist.\n", list[0]);
       }else{
-      // go to mem to allocate memory
+        // go to mem to allocate memory
 
-      int fd;
-      char *pipe = "rdpipe";
-      char buf[1024], pnum[20];
+        int fd;
+        char *pipe = "rdpipe";
+        char buf[1024], pnum[20];
 
-      sprintf(pnum, "%d", temp);
+        sprintf(pnum, "%d", temp);
 
-      char *str = NULL;
-      char *allocate = " allocate";
-      str = strcat(pnum, allocate);
+        char *str = NULL;
+        char *allocate = " allocate";
+        str = strcat(pnum, allocate);
 
-      mkfifo(pipe, 0666);
+        mkfifo(pipe, 0666);
 
-      fd = open(pipe, O_WRONLY);
-      write(fd, str, 1024);
-      close(fd);
+        fd = open(pipe, O_WRONLY);
+        write(fd, str, 1024);
+        close(fd);
 
-      unlink(pipe);
+        unlink(pipe);
 
-      while(1){
-        char *pipe2 = "wrpipe";
+        while(1){
+          char *pipe2 = "wrpipe";
 
-        if((fd = open(pipe2, O_RDONLY)) > 0){
-          read(fd, buf, 1024);
+          if((fd = open(pipe2, O_RDONLY)) > 0){
+            read(fd, buf, 1024);
 
-          close(fd);
+            close(fd);
 
-          //printf("Received message: %s\n", buf);
-	  int index = atoi(buf);
-          printf("Received message: %d\n", index);
+	    int index = atoi(buf);
 
-	  unlink(pipe2);
-	  break;
-        }else{
-	  continue;
-        }
-      } 
+	    unlink(pipe2);
 
+	    char *arr = NULL;
+            cse320_malloc(arr, index, temp);
 
+	    break;
 
-	char *arr = NULL;
-        cse320_malloc(arr, temp);
+          }else{
+	    continue;
+          }
+        }   
+
       }
 
     // read
