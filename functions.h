@@ -44,4 +44,6 @@ first_table first_level_table[4];
 
 cache cache_table[4];
 
+extern int threadcheck[4];
+
 #endif

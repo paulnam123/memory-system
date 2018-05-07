@@ -10,6 +10,8 @@
 #include <unistd.h>
 #include "functions.h"
 
+int threadcheck[4] = {0};
+
 int main(int argc, char **argv){
 
   while(1){
@@ -65,7 +67,10 @@ int main(int argc, char **argv){
       for(i = 0;i < 4;i++){
         if(id == (unsigned long) tid[i]){
 	  //pthread_detach(tid[i]);
-	  pthread_cancel(tid[i]);
+	  //pthread_cancel(tid[i]);
+	  threadcheck[i] = 1;
+	  pthread_join(tid[i], NULL);
+	  threadcheck[i] = 0;
 	  tid[i] = 0;
 	  found = 1;
 	  temp = i;
@@ -519,7 +524,10 @@ int main(int argc, char **argv){
       for(i = 0;i < 4;i++){
 	if(tid[i] != 0){
 	  //pthread_detach(tid[i]);
-	  pthread_cancel(tid[i]);
+	  //pthread_cancel(tid[i]);
+	  threadcheck[i] = 1;
+	  pthread_join(tid[i], NULL);
+	  threadcheck[i] = 0;
 	}
       }
 
@@ -550,8 +558,19 @@ int main(int argc, char **argv){
 
 void *my_thread(void *vargp){
 
-  while(1){
+  // threadcheck
+  unsigned long tid = (unsigned long) pthread_self();
+  int i, temp, condition;
 
+  for(i = 0;i < 4;i++){
+    if(first_level_table[i].tid == tid){
+      temp = i;
+      break;
+    }
+  }
+
+  while(!condition){
+    condition = threadcheck[temp];
   }
 
   return NULL;
