@@ -63,7 +63,7 @@ int main(int argc, char **argv){
 
       if(!strcmp(list[1], "allocate")){
         // change sleep back to 5
-        sleep(1);
+        sleep(5);
 
 	for(i = process;i < (process + 256);i+=4){
 	  if(valid[i] == 0){
@@ -92,7 +92,7 @@ int main(int argc, char **argv){
       }else if(!strcmp(list[1], "read")){
 
         // change sleep back to 5
-        sleep(1);
+        sleep(5);
 
 	int received_index = atoi(list[2]);
 
@@ -141,7 +141,7 @@ int main(int argc, char **argv){
       // write
       }else if(!strcmp(list[1], "write")){
         // change sleep back to 5
-        sleep(1);
+        sleep(5);
 
 	int received_index = atoi(list[2]);
 
