@@ -38,8 +38,6 @@ int main(int argc, char **argv){
       list[1] = 0x0;
     }
 
-
-
     // create
     if(!strcmp(command, "create")){
       for(i = 0;i < 4;i++){
@@ -121,20 +119,23 @@ int main(int argc, char **argv){
       for(i = 0;i < 4;i++){
 	if(tid[i] != 0){
 	  printf("%lu\n", (unsigned long) tid[i]);
+	  found = 1;
 	}
       }
+    if(!found){
+      printf("There are no current processes.\n");
+    }
 
     // mem
     }else if(!strcmp(command, "mem")){
       // edge case for X = 0
-      temp = atoi(list[0]);
-      if(temp == 0){
+      unsigned long id = strtoul(list[0], 0, 0);
+      if(id == 0){
         printf("Process with id %s does not exist.\n", list[0]);
         free(list);
         continue;
       }
 
-      unsigned long id = strtoul(list[0], 0, 0);
       for(i = 0;i < 4;i++){
 	if(id == (unsigned long) tid[i]){
 	  temp = i;
@@ -146,6 +147,7 @@ int main(int argc, char **argv){
       if(!found){
 	printf("Process with id %s does not exist.\n", list[0]);
       }else{
+	found = 0;
 	char *arr = NULL;
 	for(i = 0;i < 1024;i++){
 	  for(j = 0;j < 1024;j++){
@@ -159,8 +161,13 @@ int main(int argc, char **argv){
 	      arr = strcat(first, second);
 	      arr = strcat(arr, last);
 	      printf("%s\n", arr);
+
+	      found = 1;
 	    }
 	  }
+	}
+	if(!found){
+	  printf("No virtual memory addresses used by process %s\n", list[0]);
 	}
       }
 
@@ -476,13 +483,14 @@ int main(int argc, char **argv){
     }
 
     free(list);
-
+/*
     // print cache********************
     for(i = 0;i < 4;i++){
       printf("----------------------\n");
       printf("valid: %d, addr: %d, value: %d\n", cache_table[i].valid, cache_table[i].addr, cache_table[i].value);
     }
       printf("----------------------\n");
+*/
   }
 
   return 0;
