@@ -38,6 +38,8 @@ int main(int argc, char **argv){
       list[1] = 0x0;
     }
 
+
+
     // create
     if(!strcmp(command, "create")){
       for(i = 0;i < 4;i++){
@@ -262,13 +264,17 @@ int main(int argc, char **argv){
 	  int phys = cse320_virt_to_phys(temp, p1, p2);
 
 	  // mod 4 to get index of cache (direct mapped)
-	  int cache_index = phys % 4;
+	  int cache_index = (phys/4) % 4;
 	  
-	  if(cache_table[cache_index].addr == phys){
+	  if(cache_table[cache_index].valid == 1 && cache_table[cache_index].addr == phys){
 	    printf("Cache hit\n");
 	    printf("%d\n", cache_table[cache_index].value);
 	  }else{
 	    printf("Cache miss\n");
+	    printf("Cache miss\n");
+	    if(cache_table[cache_index].valid == 1){
+	      printf("Eviction\n");
+	    }
 
             // go to mem to read memory
 
@@ -323,7 +329,8 @@ int main(int argc, char **argv){
 	    // update value in the cache table
 	    cache_table[cache_index].addr = phys;
 	    cache_table[cache_index].value = retval;
-	    
+	    cache_table[cache_index].valid = 1;	    
+
 	    printf("%d\n", retval);
 	  }
 
@@ -373,18 +380,22 @@ int main(int argc, char **argv){
 	  int phys = cse320_virt_to_phys(temp, p1, p2);
 
 	  // mod 4 to get index of cache (direct mapped)
-	  int cache_index = phys % 4;
+	  int cache_index = (phys/4) % 4;
 	  
-	  if(cache_table[cache_index].addr == phys){
+	  if(cache_table[cache_index].valid == 1 && cache_table[cache_index].addr == phys){
 	    printf("Cache hit\n");
 	  }else{
 	    printf("Cache miss\n");
+	    if(cache_table[cache_index].valid == 1){
+	      printf("Eviction\n");
+	    }
 	  }
 
 	  // update value in the cache table
 	  cache_table[cache_index].addr = phys;
 	  int value = atoi(list[2]);
 	  cache_table[cache_index].value = value;
+	  cache_table[cache_index].valid = 1;
 
           // go to mem to write memory
           int fd;
@@ -459,6 +470,12 @@ int main(int argc, char **argv){
 
     free(list);
 
+    // print cache********************
+    for(i = 0;i < 4;i++){
+      printf("----------------------\n");
+      printf("valid: %d, addr: %d, value: %d\n", cache_table[i].valid, cache_table[i].addr, cache_table[i].value);
+    }
+      printf("----------------------\n");
   }
 
   return 0;
