@@ -1,0 +1,29 @@
+make to compile
+make clean to delete
+
+./main to run main.c
+./mem to run mem.c
+
+Commands are:
+create
+kill X
+list
+mem X
+allocate X
+read X Y
+write X Y Z
+exit
+
+e.g.:
+create
+list
+allocate 140567333984092
+mem 140567333984092
+write 140567333984092 00000000000000000000000000000000 899
+read 140567333984092 00000000000000000000000000000000
+exit
+
+
+In order to test just part1, the if statement in main.c from line 289-296 has to be commented out along with line 356-358, which updates the cache, and line 370, which is the closing bracket for the if statement. Also the if statement from line 424-431 and line 495-499, which updates the cache, has to be commented out.
+
+In order to test adress out of range or address not aligned error, you can edit the variable in mem.c called received_index on line 98 for read and line 147 for write. For example, you can do received_index += 1 in the following line.

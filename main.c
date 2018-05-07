@@ -264,17 +264,21 @@ int main(int argc, char **argv){
 	// check if virtual memory exists
 	char part1[11];
 	char part2[11];
+	char part3[13];
 	part1[10] = '\0';
 	part2[10] = '\0';
+	part3[12] = '\0';
 
 	strncpy(part1, list[1], 10);
 	strncpy(part2, list[1]+10, 10);
+	strncpy(part3, list[1]+20, 12);
 
 	int p1 = strtol(part1, NULL, 2);
 	int p2 = strtol(part2, NULL, 2);
+	int p3 = strtol(part3, NULL, 2);
 
 	// temp here is process index
-	if(first_level_table[temp].second_level_table[p1].address[p2].used == 1){
+	if(p3 == 0 && first_level_table[temp].second_level_table[p1].address[p2].used == 1){
 	
 	  // read cache first
 	  int phys = cse320_virt_to_phys(temp, p1, p2);
@@ -395,17 +399,21 @@ int main(int argc, char **argv){
 	// check if virtual memory exists
 	char part1[11];
 	char part2[11];
+	char part3[13];
 	part1[10] = '\0';
 	part2[10] = '\0';
+	part3[12] = '\0';
 
 	strncpy(part1, list[1], 10);
 	strncpy(part2, list[1]+10, 10);
+	strncpy(part3, list[1]+20, 12);
 
 	int p1 = strtol(part1, NULL, 2);
 	int p2 = strtol(part2, NULL, 2);
+	int p3 = strtol(part3, NULL, 2);
 
 	// temp here is process index
-	if(first_level_table[temp].second_level_table[p1].address[p2].used == 1){
+	if(p3 == 0 && first_level_table[temp].second_level_table[p1].address[p2].used == 1){
 
 	  // write to cache first (write through)
 	  int phys = cse320_virt_to_phys(temp, p1, p2);
