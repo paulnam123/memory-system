@@ -326,26 +326,42 @@ int main(int argc, char **argv){
                 read(fd, buf, 1024);
 
                 close(fd);
+		unlink(pipe2);
 
-	        retval = atoi(buf);
+		char *tok = NULL;
 
-	        unlink(pipe2);
+		tok = strtok(buf, " \n");
 
+	        if(!strcmp(tok, "error")){
+	          char **ret = malloc(100 * sizeof(char));
 
-	        break;
+		  if(buf[6] == 'a'){
+		    printf("Requested address is not aligned.\n");
+		  }else if (buf[6] == 'r'){
+		    printf("Requested address out of range.\n");
+		  }
+
+		  free(ret);
+		  break;
+		}else{
+
+	          retval = atoi(buf);
+
+	          // update value in the cache table
+	          cache_table[cache_index].addr = phys;
+	          cache_table[cache_index].value = retval;
+	          cache_table[cache_index].valid = 1;	    
+
+	          printf("%d\n", retval);
+
+	          break;
+		}
 
               }else{
 	        continue;
               }
-            } 
-  
-	  
-	    // update value in the cache table
-	    cache_table[cache_index].addr = phys;
-	    cache_table[cache_index].value = retval;
-	    cache_table[cache_index].valid = 1;	    
+            }  
 
-	    printf("%d\n", retval);
 	  }
 
 	}else{

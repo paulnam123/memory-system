@@ -98,6 +98,29 @@ int main(int argc, char **argv){
 
 	if(received_index % 4){
 	  // error not aligned
+	  char *error = "error align";
+          char *pipe2 = "wrpipe";
+
+          mkfifo(pipe2, 0666);
+
+          fd = open(pipe2, O_WRONLY);
+          write(fd, error, 100);
+          close(fd);
+    
+          unlink(pipe2);
+
+	}else if((received_index < process) || (received_index >= (process + 256))){ 
+	  // error out of range
+	  char *error = "error range";
+          char *pipe2 = "wrpipe";
+
+          mkfifo(pipe2, 0666);
+
+          fd = open(pipe2, O_WRONLY);
+          write(fd, error, 100);
+          close(fd);
+    
+          unlink(pipe2);
 	}else{
 	  int retval = *(int*)(memory+received_index);  
   	  char retvalback[100];
