@@ -64,6 +64,7 @@ int main(int argc, char **argv){
       unsigned long id = strtoul(list[0], 0, 0);
       for(i = 0;i < 4;i++){
         if(id == (unsigned long) tid[i]){
+	  pthread_detach(tid[i]);
 	  pthread_cancel(tid[i]);
 	  tid[i] = 0;
 	  found = 1;
@@ -509,6 +510,7 @@ int main(int argc, char **argv){
 
       for(i = 0;i < 4;i++){
 	if(tid[i] != 0){
+	  pthread_detach(tid[i]);
 	  pthread_cancel(tid[i]);
 	}
       }

@@ -32,6 +32,7 @@ int main(int argc, char **argv){
     char *pipe = "rdpipe";
     char buf[1024];
 
+
     if((fd = open(pipe, O_RDONLY)) > 0){
       read(fd, buf, 1024);
 
