@@ -560,7 +560,7 @@ void *my_thread(void *vargp){
 
   // threadcheck
   unsigned long tid = (unsigned long) pthread_self();
-  int i, temp, condition;
+  int i, temp, condition = 0;
 
   for(i = 0;i < 4;i++){
     if(first_level_table[i].tid == tid){
