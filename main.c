@@ -405,11 +405,7 @@ int main(int argc, char **argv){
 	    }
 	  }
 
-	  // update value in the cache table
-	  cache_table[cache_index].addr = phys;
-	  int value = atoi(list[2]);
-	  cache_table[cache_index].value = value;
-	  cache_table[cache_index].valid = 1;
+
 
           // go to mem to write memory
           int fd;
@@ -469,6 +465,13 @@ int main(int argc, char **argv){
 
 		free(ret);
 		break;
+	      }else{
+		
+	        // update value in the cache table
+	        cache_table[cache_index].addr = phys;
+	        int value = atoi(list[2]);
+	        cache_table[cache_index].value = value;
+	        cache_table[cache_index].valid = 1;
 	      }
 
 	      break;
@@ -511,6 +514,8 @@ int main(int argc, char **argv){
     }
       printf("----------------------\n");
 */
+
+
   }
 
   return 0;

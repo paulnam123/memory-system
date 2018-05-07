@@ -95,8 +95,6 @@ int main(int argc, char **argv){
         sleep(1);
 
 	int received_index = atoi(list[2]);
-	// testing for error message sending
-//	received_index += 1;
 
 	if(received_index % 4){
 	  // error not aligned
@@ -125,7 +123,6 @@ int main(int argc, char **argv){
 	int received_index = atoi(list[2]);
 
 
-
 	if(received_index % 4){
 	  // error not aligned
 	  char *error = "error align";
@@ -138,7 +135,19 @@ int main(int argc, char **argv){
           close(fd);
     
           unlink(pipe2);
-	    // another else if for out of range
+	
+	}else if((received_index < process) || (received_index >= (process + 256))){ 
+	  // error out of range
+	  char *error = "error range";
+          char *pipe2 = "wrpipe";
+
+          mkfifo(pipe2, 0666);
+
+          fd = open(pipe2, O_WRONLY);
+          write(fd, error, 100);
+          close(fd);
+    
+          unlink(pipe2);
 	}else{
 	  int received_value = atoi(list[3]);
 	    *(int*)(memory+received_index) = received_value;
