@@ -77,6 +77,14 @@ int main(int argc, char **argv){
       if(!found){
 	printf("Process with id %s does not exist.\n", list[0]);
       }else{
+
+	// invalidate cache for killed process
+	for(i = 0;i < 4;i++){
+	  if(cache_table[i].addr >= (temp * 256) && cache_table[i].addr < ((temp * 256) + 256)){
+	    cache_table[i].valid = 0;
+	  } 
+	}
+
         // reset tables and tid from first table
         first_level_table[temp].tid = 0;
 
@@ -270,7 +278,6 @@ int main(int argc, char **argv){
 	    printf("Cache hit\n");
 	    printf("%d\n", cache_table[cache_index].value);
 	  }else{
-	    printf("Cache miss\n");
 	    printf("Cache miss\n");
 	    if(cache_table[cache_index].valid == 1){
 	      printf("Eviction\n");

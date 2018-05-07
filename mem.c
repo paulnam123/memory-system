@@ -35,7 +35,7 @@ int main(int argc, char **argv){
     if((fd = open(pipe, O_RDONLY)) > 0){
       read(fd, buf, 1024);
 
-      printf("Received message: %s\n", buf);
+      //printf("Received message: %s\n", buf);
       close(fd);
 
       unlink(pipe);
@@ -73,7 +73,7 @@ int main(int argc, char **argv){
 	  }
 	}
 
-	printf("addr: %d\n", addr);
+	//printf("addr: %d\n", addr);
 
 	char addrback[100];
         char *pipe2 = "wrpipe";
