@@ -95,6 +95,9 @@ int main(int argc, char **argv){
         sleep(1);
 
 	int received_index = atoi(list[2]);
+	// testing for error message sending
+//	received_index += 1;
+
 	if(received_index % 4){
 	  // error not aligned
 	}else{
@@ -114,29 +117,44 @@ int main(int argc, char **argv){
 
 	}
 
+      // write
       }else if(!strcmp(list[1], "write")){
         // change sleep back to 5
         sleep(1);
 
 	int received_index = atoi(list[2]);
+
+
+
 	if(received_index % 4){
 	  // error not aligned
-	  // another else if for out of range
+	  char *error = "error align";
+          char *pipe2 = "wrpipe";
+
+          mkfifo(pipe2, 0666);
+
+          fd = open(pipe2, O_WRONLY);
+          write(fd, error, 100);
+          close(fd);
+    
+          unlink(pipe2);
+	    // another else if for out of range
 	}else{
 	  int received_value = atoi(list[3]);
-	  *(int*)(memory+received_index) = received_value;
-	}
+	    *(int*)(memory+received_index) = received_value;
 	
-	char *success = "success";
-        char *pipe2 = "wrpipe";
+	
+	  char *success = "success";
+          char *pipe2 = "wrpipe";
 
-        mkfifo(pipe2, 0666);
+          mkfifo(pipe2, 0666);
 
-        fd = open(pipe2, O_WRONLY);
-        write(fd, success, 100);
-        close(fd);
+          fd = open(pipe2, O_WRONLY);
+          write(fd, success, 100);
+          close(fd);
     
-        unlink(pipe2);
+          unlink(pipe2);
+        }
 
       }else if(!strcmp(list[1], "kill")){
 

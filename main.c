@@ -451,6 +451,26 @@ int main(int argc, char **argv){
 
 	      unlink(pipe2);
 
+	      // check if error is returned
+
+	      char *tok = NULL;
+	      //int c = 0;
+
+	      tok = strtok(buf, " \n");
+
+	      if(!strcmp(tok, "error")){
+	        char **ret = malloc(100 * sizeof(char));
+
+		if(buf[6] == 'a'){
+		  printf("Requested address is not aligned.\n");
+		}else if (buf[6] == 'r'){
+		  printf("Requested address out of range.\n");
+		}
+
+		free(ret);
+		break;
+	      }
+
 	      break;
 
             }else{
